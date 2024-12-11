@@ -4,8 +4,16 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using TaskManagementAPI.Data;
+using TaskManagementAPI.Services.Interfaces;
+using TaskManagementAPI.Services;
+using TaskManagementAPI.Repositories.IRepositories;
+using TaskManagementAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 //Swager Configuration
 builder.Services.AddSwaggerGen(options =>
