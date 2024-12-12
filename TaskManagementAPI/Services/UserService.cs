@@ -19,5 +19,29 @@ namespace TaskManagementAPI.Services
             var user = await _userRepository.CreateUser(userDTO);
             return user;
         }
+
+        public async Task<User> UpdateUser(UpdateUserDTO userDTO)
+        {
+            var user = await _userRepository.UpdateUser(userDTO);
+            return user;
+        }
+
+        public async Task<User> DeleteUser(Guid id)
+        {
+            var user = await _userRepository.DeleteUser(id);
+            return user;
+        }
+
+        public async Task<User> GetUserById(Guid id)
+        {
+            var user = await _userRepository.GetUserById(id);
+            return user;
+        }
+
+        public async Task<IEnumerable<User>> GetUsers()
+        {
+            var users = await _userRepository.GetUsers();
+            return users;
+        }
     }
 }

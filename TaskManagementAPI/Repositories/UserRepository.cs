@@ -1,4 +1,6 @@
-﻿    using TaskManagementAPI.Data;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using TaskManagementAPI.Data;
     using TaskManagementAPI.Models;
     using TaskManagementAPI.Models.DTOs;
     using TaskManagementAPI.Repositories.IRepositories;
@@ -32,24 +34,61 @@
                 return user;
             }
 
-            public Task<User> DeleteUser(int id)
+            public async Task<User> DeleteUser(Guid id)
             {
-                throw new NotImplementedException();
+                var user = await _context.Users.FindAsync(id);
+                if (user == null)
+                {
+                    return null;
+                }
+                
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+                return user;
             }
 
-            public Task<User> GetUserById(int id)
+            public async Task<User> GetUserById(Guid id)
             {
-                throw new NotImplementedException();
+                var user = await _context.Users.FindAsync(id);
+                if(user == null)
+                {
+                    return null;
+                }
+
+                return user;
             }
 
-            public Task<IEnumerable<User>> GetUsers()
+            public async Task<IEnumerable<User>> GetUsers()
             {
-                throw new NotImplementedException();
+                var users = await _context.Users.ToListAsync();
+                if(users == null)
+                {
+                    return null;
+                }
+
+                return users;
             }
 
-            public Task<User> UpdateUser(User user)
+            public async Task<User> UpdateUser(UpdateUserDTO userDTO)
             {
-                throw new NotImplementedException();
+                var user = await _context.Users.FindAsync(userDTO.ID);
+                if (user == null) 
+                { 
+                    return null;
+                }
+
+                if (!string.IsNullOrEmpty(userDTO.Password))
+                {
+                    user.Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password);
+                }
+
+                user.UserName = userDTO.UserName;
+                user.Email = userDTO.Email;
+                user.Role = userDTO.Role;
+
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+                return user;
             }
         }
     }

@@ -5,15 +5,15 @@ namespace TaskManagementAPI.Repositories.IRepositories
 {
     public interface IUserRepository
     {
-        //Get all users
+        //Get all users (Done)
         Task<IEnumerable<User>> GetUsers();
-        //Get user by ID
-        Task<User> GetUserById(int id);
-        //Create user
+        //Get user by ID (Done)
+        Task<User> GetUserById(Guid id);
+        //Create user (Done)
         Task<User> CreateUser(UserDTO userDTO);
-        //Update user
-        Task<User> UpdateUser(User user);
-        //Delete user
-        Task<User> DeleteUser(int id);
+        //Update user (Done)
+        Task<User> UpdateUser(UpdateUserDTO userDTO);
+        //Delete user (Done)
+        Task<User> DeleteUser(Guid id);
     }
 }
