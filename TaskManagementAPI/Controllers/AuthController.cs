@@ -3,6 +3,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using TaskManagementAPI.Models;
+using TaskManagementAPI.Models.DTOs;
+using TaskManagementAPI.Services.Interfaces;
 
 namespace TaskManagementAPI.Controllers
 {
@@ -11,10 +14,31 @@ namespace TaskManagementAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly IAuthService _authService;
 
-        public AuthController(IConfiguration configuration)
+        public AuthController(IConfiguration configuration, IAuthService authService)
         {
             _configuration = configuration;
+            _authService = authService;
+        }
+
+        [HttpPost("Register")]
+        public async Task<IActionResult> Register(UserDTO userDTO)
+        {
+            if (userDTO == null)
+            {
+                return BadRequest("Invalid user data.");
+            }
+
+            try
+            {
+                var registeredUser = await _authService.Register(userDTO);
+                return Ok(new { message = "User registered successfully", user = registeredUser });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error registering user", error = ex.Message });
+            }
         }
 
         [HttpPost("login")]

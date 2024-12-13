@@ -1,9 +1,9 @@
 ﻿using TaskManagementAPI.Models;
 using TaskManagementAPI.Models.DTOs;
 
-namespace TaskManagementAPI.Services.Interfaces
+namespace TaskManagementAPI.Repositories.IRepositories
 {
-    public interface IAuthService
+    public interface IAuthRepository
     {
         Task<User> Register(UserDTO userDTO);
         Task<User> Login(string username, string password);
