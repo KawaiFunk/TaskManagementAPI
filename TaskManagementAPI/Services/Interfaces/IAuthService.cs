@@ -6,6 +6,6 @@ namespace TaskManagementAPI.Services.Interfaces
     public interface IAuthService
     {
         Task<User> Register(UserDTO userDTO);
-        Task<User> Login(string username, string password);
+        Task<string> Login(string username, string password);
     }
 }

@@ -14,9 +14,9 @@ namespace TaskManagementAPI.Services
             _authRepository = authRepository;
         }
 
-        public Task<User> Login(string username, string password)
+        public Task<string> Login(string username, string password)
         {
-            throw new NotImplementedException();
+            return _authRepository.Login(username, password);
         }
 
         public Task<User> Register(UserDTO userDTO)

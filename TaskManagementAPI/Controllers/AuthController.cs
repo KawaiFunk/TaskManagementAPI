@@ -1,9 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using TaskManagementAPI.Models;
 using TaskManagementAPI.Models.DTOs;
 using TaskManagementAPI.Services.Interfaces;
 
@@ -44,35 +39,20 @@ namespace TaskManagementAPI.Controllers
         [HttpPost("login")]
         public IActionResult Login(string username, string password)
         {
-            if (username == "test" && password == "test")
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                var token = GenerateJwtToken(username);
-                return Ok(new { Token = token });
+                return BadRequest("Invalid credentials.");
             }
 
-            return Unauthorized();
-        }
-
-        private string GenerateJwtToken(string username) 
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
+            try
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, username),
-                    new Claim(ClaimTypes.Role, "Admin")
-                }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                Issuer = _configuration["Jwt:Issuer"],
-                Audience = _configuration["Jwt:Issuer"],
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+                var token = _authService.Login(username, password);
+                return Ok(new { message = "Login successful", token.Result });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error logging in", error = ex.Message });
+            }
         }
     }
 }
