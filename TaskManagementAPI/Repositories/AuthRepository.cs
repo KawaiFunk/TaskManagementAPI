@@ -1,4 +1,5 @@
-﻿using TaskManagementAPI.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using TaskManagementAPI.Data;
 using TaskManagementAPI.Models;
 using TaskManagementAPI.Models.DTOs;
 using TaskManagementAPI.Repositories.IRepositories;
@@ -21,6 +22,11 @@ namespace TaskManagementAPI.Repositories
 
         public async Task<User> Register(UserDTO userDTO)
         {
+            if (await UserExists(userDTO.Email))
+            {
+                throw new Exception("User already exists");
+            }
+
             var user = new User
             {
                 ID = Guid.NewGuid(),
@@ -34,6 +40,11 @@ namespace TaskManagementAPI.Repositories
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return user;
+        }
+
+        private async Task<bool> UserExists(string email)
+        {
+            return await _context.Users.AnyAsync(x => x.Email == email);
         }
     }
 }
