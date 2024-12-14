@@ -14,7 +14,7 @@
         public User User { get; set; }
 
         //Foreign key for Category
-        public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public int? CategoryId { get; set; }
+        public Category? Category { get; set; }
     }
 }
