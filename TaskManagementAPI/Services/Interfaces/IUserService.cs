@@ -5,10 +5,10 @@ namespace TaskManagementAPI.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<User> CreateUser(UserDTO userDTO);
-        Task<User> UpdateUser(UpdateUserDTO userDTO);
-        Task<User> DeleteUser(Guid id);
-        Task<User> GetUserById(Guid id);
-        Task<IEnumerable<User>> GetUsers();
+        Task<UserReturnDTO> CreateUser(UserDTO userDTO);
+        Task<UserReturnDTO> UpdateUser(UpdateUserDTO userDTO);
+        Task<UserReturnDTO> DeleteUser(Guid id);
+        Task<UserReturnDTO> GetUserById(Guid id);
+        Task<IEnumerable<UserReturnDTO>> GetUsers();
     }
 }

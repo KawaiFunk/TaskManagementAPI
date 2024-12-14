@@ -15,6 +15,6 @@ namespace TaskManagementAPI.Models
         public string Email { get; set; }
         [Required]
         public string Role { get; set; }
-        public ICollection<Task> Tasks { get; set; }
+        public ICollection<Task> Tasks { get; set; } = new List<Task>();
     }
 }

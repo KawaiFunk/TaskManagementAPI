@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using TaskManagementAPI.Data;
 using TaskManagementAPI.Models;
 using TaskManagementAPI.Models.DTOs;
@@ -36,7 +37,14 @@ namespace TaskManagementAPI.Repositories
                 throw new UnauthorizedAccessException($"Claim 'NameIdentifier' value '{userIdClaim.Value}' is not a valid GUID.");
             }
 
-            var user = await _context.Users.FindAsync(userId);
+            var user = await _context.Users
+                .Include(u => u.Tasks)  // Ensure Tasks are loaded
+                .FirstOrDefaultAsync(u => u.ID == userId);
+
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
 
             var task = new Models.Task
             {
@@ -51,10 +59,31 @@ namespace TaskManagementAPI.Repositories
                 CategoryId = null
             };
 
+            // Add task to user's tasks collection
+            user.Tasks.Add(task);
+
+            // Add task to Tasks DbSet
             await _context.Tasks.AddAsync(task);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();  // Save changes to the database
+
             return task;
         }
+
+        public async Task<User> GetUserWithTasks(Guid userId)
+        {
+            var user = await _context.Users
+                .Include(u => u.Tasks)  // Eagerly load tasks
+                .FirstOrDefaultAsync(u => u.ID == userId);
+
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            return user;
+        }
+
+
 
         public Task<Models.Task> DeleteTask(Guid id)
         {

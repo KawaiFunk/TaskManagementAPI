@@ -49,7 +49,7 @@ using TaskManagementAPI.Data;
 
             public async Task<User> GetUserById(Guid id)
             {
-                var user = await _context.Users.FindAsync(id);
+                var user = await GetUserWithTasks(id);
                 if(user == null)
                 {
                     return null;
@@ -58,7 +58,21 @@ using TaskManagementAPI.Data;
                 return user;
             }
 
-            public async Task<IEnumerable<User>> GetUsers()
+            public async Task<User> GetUserWithTasks(Guid userId)
+            {
+                var user = await _context.Users
+                    .Include(u => u.Tasks)
+                    .FirstOrDefaultAsync(u => u.ID == userId);
+
+                if (user == null)
+                {
+                    throw new Exception("User not found");
+                }
+
+                return user;
+            }
+
+        public async Task<IEnumerable<User>> GetUsers()
             {
                 var users = await _context.Users.ToListAsync();
                 if(users == null)
