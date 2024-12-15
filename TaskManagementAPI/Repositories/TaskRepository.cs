@@ -38,7 +38,7 @@ namespace TaskManagementAPI.Repositories
             }
 
             var user = await _context.Users
-                .Include(u => u.Tasks)  // Ensure Tasks are loaded
+                .Include(u => u.Tasks)
                 .FirstOrDefaultAsync(u => u.ID == userId);
 
             if (user == null)
@@ -59,12 +59,11 @@ namespace TaskManagementAPI.Repositories
                 CategoryId = null
             };
 
-            // Add task to user's tasks collection
             user.Tasks.Add(task);
 
             // Add task to Tasks DbSet
             await _context.Tasks.AddAsync(task);
-            await _context.SaveChangesAsync();  // Save changes to the database
+            await _context.SaveChangesAsync();
 
             return task;
         }
@@ -72,7 +71,7 @@ namespace TaskManagementAPI.Repositories
         public async Task<User> GetUserWithTasks(Guid userId)
         {
             var user = await _context.Users
-                .Include(u => u.Tasks)  // Eagerly load tasks
+                .Include(u => u.Tasks)
                 .FirstOrDefaultAsync(u => u.ID == userId);
 
             if (user == null)
@@ -83,11 +82,18 @@ namespace TaskManagementAPI.Repositories
             return user;
         }
 
-
-
-        public Task<Models.Task> DeleteTask(Guid id)
+        public async Task<Models.Task> DeleteTask(Guid id)
         {
-            throw new NotImplementedException();
+            var task = _context.Tasks.FirstOrDefault(t => t.ID == id);
+            if (task == null)
+            {
+                throw new Exception("Task not found");
+            }
+
+            _context.Tasks.Remove(task);
+            await _context.SaveChangesAsync();
+
+            return task;
         }
 
         public Task<Models.Task> GetTaskById(Guid id)

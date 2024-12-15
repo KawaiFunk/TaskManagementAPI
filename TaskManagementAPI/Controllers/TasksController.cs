@@ -49,5 +49,19 @@ namespace TaskManagementAPI.Controllers
                 return StatusCode(500, new { message = "Error creating task", error = ex.Message });
             }
         }
+
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> DeleteTask(Guid id)
+        {
+            try
+            {
+                var deletedTask = await _taskService.DeleteTask(id);
+                return Ok(new { message = "Task deleted succesfully", task = deletedTask });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error deleting task", error = ex.Message });
+            }
+        }
     }
 }

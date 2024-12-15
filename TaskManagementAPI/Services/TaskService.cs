@@ -31,7 +31,8 @@ namespace TaskManagementAPI.Services
 
         public Task<Models.Task> DeleteTask(Guid id)
         {
-            throw new NotImplementedException();
+            var deletedTask = _taskRepository.DeleteTask(id);
+            return deletedTask;
         }
 
         public Task<Models.Task> GetTaskById(Guid id)
