@@ -17,19 +17,6 @@ namespace TaskManagementAPI.Controllers
             _taskService = taskService;
         }
 
-        [HttpGet("all")]
-        public IActionResult GetTasks()
-        {
-            return Ok(new { Message = "This is secired" });
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet("admin/all")]
-        public IActionResult AdminGet()
-        {
-            return Ok(new { Message = "This is an admin endpoint" });
-        }
-
         [HttpPost("Create")]
         [Authorize]
         public async Task<IActionResult> CreateTask(TaskDTO taskDTO)
@@ -61,6 +48,20 @@ namespace TaskManagementAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "Error deleting task", error = ex.Message });
+            }
+        }
+
+        [HttpGet("GetTasks")]
+        public async Task<IActionResult> GetUserTasks()
+        {
+            try
+            {
+                var tasks = await _taskService.GetTasks();
+                return Ok(new {message = "Tasks retrieved succesfully", tasks = tasks});
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error retrieving tasks", error = ex.Message });
             }
         }
     }

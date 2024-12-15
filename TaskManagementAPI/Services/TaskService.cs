@@ -40,9 +40,10 @@ namespace TaskManagementAPI.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Models.Task>> GetTasks()
+        public async Task<IEnumerable<Models.Task>> GetTasks()
         {
-            throw new NotImplementedException();
+            var tasks = await _taskRepository.GetTasks();
+            return tasks;
         }
 
         public Task<Models.Task> UpdateTask(TaskDTO taskDTO)

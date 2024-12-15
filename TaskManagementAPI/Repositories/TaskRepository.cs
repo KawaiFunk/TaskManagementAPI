@@ -101,9 +101,18 @@ namespace TaskManagementAPI.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Models.Task>> GetTasks()
+        public async Task<IEnumerable<Models.Task>> GetTasks()
         {
-            throw new NotImplementedException();
+            var user = _httpContextAccessor.HttpContext?.User;
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException("User not found");
+            }
+
+            var userIdClaim = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            var tasks = await _context.Tasks.Where(t => t.UserId == Guid.Parse(userIdClaim.Value)).ToListAsync();
+
+            return tasks;
         }
 
         public Task<Models.Task> UpdateTask(TaskDTO taskDTO)
