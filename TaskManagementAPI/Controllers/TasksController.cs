@@ -64,5 +64,23 @@ namespace TaskManagementAPI.Controllers
                 return StatusCode(500, new { message = "Error retrieving tasks", error = ex.Message });
             }
         }
+
+        [HttpPut("Update")]
+        public async Task<IActionResult> UpdateTask(TaskUpdateDTO taskDTO)
+        {
+            if (taskDTO == null)
+            {
+                return BadRequest("Invalid task data.");
+            }
+            try
+            {
+                var updatedTask = await _taskService.UpdateTask(taskDTO);
+                return Ok(new { message = "Task updated succesfully", task = updatedTask });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error updating task", error = ex.Message });
+            }
+        }
     }
 }

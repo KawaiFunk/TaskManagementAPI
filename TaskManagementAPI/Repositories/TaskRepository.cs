@@ -115,9 +115,23 @@ namespace TaskManagementAPI.Repositories
             return tasks;
         }
 
-        public Task<Models.Task> UpdateTask(TaskDTO taskDTO)
+        public async Task<Models.Task> UpdateTask(TaskUpdateDTO taskDTO)
         {
-            throw new NotImplementedException();
+            var task = await _context.Tasks.FirstOrDefaultAsync(t => t.ID == taskDTO.ID);
+
+            if (task == null)
+            {
+                throw new Exception("Task not found");
+            }
+
+            task.Title = taskDTO.Title;
+            task.Description = taskDTO.Description;
+            task.DueDate = taskDTO.DueDate;
+            task.Status = taskDTO.Status;
+            task.Priority = taskDTO.Priority;
+
+            await _context.SaveChangesAsync();
+            return task;
         }
     }
 }

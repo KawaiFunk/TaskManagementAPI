@@ -46,9 +46,10 @@ namespace TaskManagementAPI.Services
             return tasks;
         }
 
-        public Task<Models.Task> UpdateTask(TaskDTO taskDTO)
+        public async Task<Models.Task> UpdateTask(TaskUpdateDTO taskDTO)
         {
-            throw new NotImplementedException();
+            var updatedTask = await _taskRepository.UpdateTask(taskDTO);
+            return updatedTask;
         }
     }
 }
