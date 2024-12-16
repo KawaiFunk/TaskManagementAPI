@@ -96,9 +96,15 @@ namespace TaskManagementAPI.Repositories
             return task;
         }
 
-        public Task<Models.Task> GetTaskById(Guid id)
+        public async Task<Models.Task> GetTaskById(Guid id)
         {
-            throw new NotImplementedException();
+            var task = await _context.Tasks.Include(t => t.User).FirstOrDefaultAsync(t => t.ID == id);
+            if (task == null)
+            {
+                throw new Exception("Task not found");
+            }
+
+            return task;
         }
 
         public async Task<IEnumerable<Models.Task>> GetTasks()

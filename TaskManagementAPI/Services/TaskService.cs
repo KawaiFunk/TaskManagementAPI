@@ -35,9 +35,21 @@ namespace TaskManagementAPI.Services
             return deletedTask;
         }
 
-        public Task<Models.Task> GetTaskById(Guid id)
+        public async Task<TaskReturnDTO> GetTaskById(Guid id)
         {
-            throw new NotImplementedException();
+            var task = await _taskRepository.GetTaskById(id);
+            var returnTask = new TaskReturnDTO
+            {
+                ID = task.ID,
+                Title = task.Title,
+                Description = task.Description,
+                DueDate = task.DueDate,
+                Priority = task.Priority,
+                Status = task.Status,
+                UserName = task.User.UserName
+            };
+
+            return returnTask;
         }
 
         public async Task<IEnumerable<Models.Task>> GetTasks()

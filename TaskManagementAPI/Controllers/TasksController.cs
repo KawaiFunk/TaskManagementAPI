@@ -82,5 +82,19 @@ namespace TaskManagementAPI.Controllers
                 return StatusCode(500, new { message = "Error updating task", error = ex.Message });
             }
         }
+
+        [HttpGet("GetTask/{id}")]
+        public async Task<IActionResult> GetTask(Guid id)
+        {
+            try
+            {
+                var task = await _taskService.GetTaskById(id);
+                return Ok(new { message = "Task retrieved succesfully", task = task });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error retrieving task", error = ex.Message });
+            }
+        }
     }
 }
