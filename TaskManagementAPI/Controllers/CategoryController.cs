@@ -1,12 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TaskManagementAPI.Services.Interfaces;
 
 namespace TaskManagementAPI.Controllers
 {
     public class CategoryController : Controller
     {
-        public IActionResult Index()
+        private readonly ICategoryService _categoryService;
+
+        public CategoryController(ICategoryService categoryService)
         {
-            return View();
+            _categoryService = categoryService;
         }
+
+
     }
 }
