@@ -8,6 +8,7 @@ using TaskManagementAPI.Services.Interfaces;
 using TaskManagementAPI.Services;
 using TaskManagementAPI.Repositories.IRepositories;
 using TaskManagementAPI.Repositories;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,6 +66,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
     });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy => policy.RequireClaim(ClaimTypes.Role, "Admin"));
+    options.AddPolicy("User", policy => policy.RequireClaim(ClaimTypes.Role, "User"));
+});
+
 
 // Add services to the container.
 

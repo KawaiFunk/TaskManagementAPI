@@ -35,10 +35,15 @@ namespace TaskManagementAPI.Repositories
                 throw new Exception("Invalid credentials");
             }
 
-            return GenerateJwtToken(user);
+            if (user.Role == "Admin")
+            {
+                return GenerateJwtTokenAdmin(user);
+            }
+
+            return GenerateJwtTokenUser(user);
         }
 
-        private string GenerateJwtToken(User user)
+        private string GenerateJwtTokenAdmin(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
@@ -49,6 +54,29 @@ namespace TaskManagementAPI.Repositories
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.Role, "Admin"),
+                    new Claim(ClaimTypes.NameIdentifier, user.ID.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                Issuer = _configuration["Jwt:Issuer"],
+                Audience = _configuration["Jwt:Issuer"],
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+        private string GenerateJwtTokenUser(User user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Role, "User"),
                     new Claim(ClaimTypes.NameIdentifier, user.ID.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
