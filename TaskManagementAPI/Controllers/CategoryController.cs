@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TaskManagementAPI.Models.DTOs;
 using TaskManagementAPI.Services.Interfaces;
 
 namespace TaskManagementAPI.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
+    [Authorize("Admin")]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
