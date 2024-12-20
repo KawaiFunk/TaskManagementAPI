@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System.Security.Claims;
 using TaskManagementAPI.Data;
 using TaskManagementAPI.Models;
@@ -159,6 +160,19 @@ namespace TaskManagementAPI.Repositories
 
             await _context.SaveChangesAsync();
 
+            return task;
+        }
+
+        public async Task<Models.Task> MarkAsCompleted(Guid id)
+        {
+            var task = await _context.Tasks.Include(t => t.User).Include(t => t.Category).FirstOrDefaultAsync(t => t.ID == id);
+            if (task == null)
+            {
+                throw new Exception("Task not found");
+            }
+
+            task.Status = "Completed";
+            await _context.SaveChangesAsync();
             return task;
         }
     }

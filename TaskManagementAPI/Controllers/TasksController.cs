@@ -109,5 +109,19 @@ namespace TaskManagementAPI.Controllers
                 return StatusCode(500, new { message = "Category asssignment failed", error = ex.Message});
             }
         }
+
+        [HttpPost("MarkAsCompleted")]
+        public async Task<IActionResult> MarkAsCompleted(Guid id)
+        {
+            try
+            {
+                var updatedTask = await _taskService.MarkAsCompleted(id);
+                return Ok(new { message = "Task marked as completed", task = updatedTask });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error marking task as completed", error = ex.Message });
+            }
+        }
     }
 }

@@ -78,10 +78,29 @@ namespace TaskManagementAPI.Services
             return tasks;
         }
 
+        public async Task<TaskReturnDTO> MarkAsCompleted(Guid id)
+        {
+            var task = await _taskRepository.MarkAsCompleted(id);
+            var taskDTO = new TaskReturnDTO
+            {
+                ID = task.ID,
+                Description = task.Description,
+                DueDate = task.DueDate,
+                Priority = task.Priority,
+                Status = task.Status,
+                Title = task.Title,
+                UserName = task.User.UserName,
+                CateogryName = task.Category.Name
+            };
+            return taskDTO;
+        }
+
         public async Task<Models.Task> UpdateTask(TaskUpdateDTO taskDTO)
         {
             var updatedTask = await _taskRepository.UpdateTask(taskDTO);
             return updatedTask;
         }
+
+
     }
 }
