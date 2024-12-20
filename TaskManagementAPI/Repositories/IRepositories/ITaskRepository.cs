@@ -9,5 +9,6 @@ namespace TaskManagementAPI.Repositories.IRepositories
         Task<Models.Task> DeleteTask(Guid id);
         Task<Models.Task> GetTaskById(Guid id);
         Task<IEnumerable<Models.Task>> GetTasks();
+        Task<Models.Task> AssignCategory(Guid taskId, string categoryName);
     }
 }

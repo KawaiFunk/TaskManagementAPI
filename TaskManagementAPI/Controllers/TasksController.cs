@@ -18,7 +18,6 @@ namespace TaskManagementAPI.Controllers
         }
 
         [HttpPost("Create")]
-        [Authorize]
         public async Task<IActionResult> CreateTask(TaskDTO taskDTO)
         {
             if (taskDTO == null)
@@ -94,6 +93,20 @@ namespace TaskManagementAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "Error retrieving task", error = ex.Message });
+            }
+        }
+
+        [HttpPost("AssignCategory")]
+        public async Task<IActionResult> AssignCategory(Guid id, string categoryName)
+        {
+            try
+            {
+                var updatedTask = await _taskService.AssignCategory(id, categoryName);
+                return Ok(new { message = "Category assigned succefully", task = updatedTask});
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Category asssignment failed", error = ex.Message});
             }
         }
     }

@@ -13,6 +13,24 @@ namespace TaskManagementAPI.Services
             _taskRepository = taskRepository;
         }
 
+        public async Task<TaskReturnDTO> AssignCategory(Guid taskId, string categoryName)
+        {
+            var task = await _taskRepository.AssignCategory(taskId, categoryName);
+            var taskDTO = new TaskReturnDTO
+            {
+                ID = task.ID,
+                Description = task.Description,
+                DueDate = task.DueDate,
+                Priority = task.Priority,
+                Status = task.Status,
+                Title = task.Title,
+                UserName = task.User.UserName,
+                CateogryName = task.Category.Name
+            };
+
+            return taskDTO;
+        }
+
         public async Task<TaskReturnDTO> CreateTask(TaskDTO taskDTO)
         {
             var createdTask = await _taskRepository.CreateTask(taskDTO);
@@ -24,7 +42,8 @@ namespace TaskManagementAPI.Services
                 DueDate = createdTask.DueDate,
                 Priority = createdTask.Priority,
                 Status = createdTask.Status,
-                UserName = createdTask.User.UserName
+                UserName = createdTask.User.UserName,
+                CateogryName = null
             };
             return taskReturnDTO;
         }
@@ -46,7 +65,8 @@ namespace TaskManagementAPI.Services
                 DueDate = task.DueDate,
                 Priority = task.Priority,
                 Status = task.Status,
-                UserName = task.User.UserName
+                UserName = task.User.UserName,
+                CateogryName = task.Category.Name
             };
 
             return returnTask;

@@ -9,5 +9,6 @@ namespace TaskManagementAPI.Services.Interfaces
         Task<Models.Task> DeleteTask(Guid id);
         Task<TaskReturnDTO> GetTaskById(Guid id);
         Task<IEnumerable<Models.Task>> GetTasks();
+        Task<TaskReturnDTO> AssignCategory(Guid taskId, string categoryName);
     }
 }

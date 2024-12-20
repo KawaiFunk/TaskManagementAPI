@@ -98,7 +98,7 @@ namespace TaskManagementAPI.Repositories
 
         public async Task<Models.Task> GetTaskById(Guid id)
         {
-            var task = await _context.Tasks.Include(t => t.User).FirstOrDefaultAsync(t => t.ID == id);
+            var task = await _context.Tasks.Include(t => t.User).Include(t => t.Category).FirstOrDefaultAsync(t => t.ID == id);
             if (task == null)
             {
                 throw new Exception("Task not found");
@@ -137,6 +137,28 @@ namespace TaskManagementAPI.Repositories
             task.Priority = taskDTO.Priority;
 
             await _context.SaveChangesAsync();
+            return task;
+        }
+
+        public async Task<Models.Task> AssignCategory(Guid taskId, string categoryName)
+        {
+            var task = await _context.Tasks.Include(t => t.User).FirstOrDefaultAsync(t => t.ID == taskId);
+            if (task == null)
+            {
+                throw new Exception("Task not found");
+            }
+
+            var category = await _context.Categories.Include(t => t.Tasks).FirstOrDefaultAsync(c => c.Name == categoryName);
+            if (category == null)
+            {
+                throw new Exception("Category not found");
+            }
+
+            task.Category = category;
+            task.CategoryId = category.ID;
+
+            await _context.SaveChangesAsync();
+
             return task;
         }
     }

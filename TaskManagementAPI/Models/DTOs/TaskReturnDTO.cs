@@ -9,5 +9,7 @@
         public string Status { get; set; }
         public int Priority { get; set; }
         public string UserName { get; set; }
+        public string CateogryName { get; set; }
+
     }
 }
